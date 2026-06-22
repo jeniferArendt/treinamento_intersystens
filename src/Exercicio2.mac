@@ -1,0 +1,28 @@
+ROUTINE Exercicio2
+Exercicio2	;
+	;
+	; 3 - Criar rotina (Exercicio2) para calcular todos os números impares entre x e y
+    ; (x e y são entradas fornecidas pelo usuário).
+	;
+	write "Digite o valor inicial (x): "
+	read x
+	;
+	write "Digite o valor final (y): "
+	read y
+	;
+	if x > y {
+        write "Erro: x deve ser menor ou igual a y", !
+		quit
+	}
+	;
+	write "Números impares entre ", x, " e ", y, ":", !
+	;
+	for i=x:1:y {
+		;
+		if (i#2 = 1) {
+			write i, " "
+		}
+	}
+	;
+	write !
+	quit
