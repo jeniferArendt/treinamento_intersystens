@@ -1,21 +1,27 @@
 ROUTINE Exercicio2
-Exercicio2	;
+Exercicio2(num1, num2)	;
 	;
 	; 3 - Criar rotina (Exercicio2) para calcular todos os números impares entre x e y
     ; (x e y são entradas fornecidas pelo usuário).
 	;
-	write !,"Digite o valor inicial (x): "
-	read x
+	set num1 = $get(num1)
+	set num2 = $get(num2)
 	;
-	write !,"Digite o valor final (y): "
-	read y
+	if num1'="" set x = num1
+	if num2'="" set y = num2
+	;
+	write !,"Digite o valor inicial (x): ",num1
+	if num1="" read x
+	;
+	write !,"Digite o valor final (y): ",num2
+	if num2="" read y
 	;
 	if x > y {
         write !,"Erro: x deve ser menor ou igual a y"
 		quit
 	}
 	;
-	write !,"Números impares entre ", x, " e ", y, ":"
+	write !,"Números impares entre ", x, " e ", y, ": "
 	;
 	for i=x:1:y {
 		;
