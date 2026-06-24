@@ -7,25 +7,25 @@ Exercicio1	;
 	; 2 - Alterar a rotina do exercício anterior para contabilizar a quantidade de
 	; números pares divididos por 10, que tenham como valor de resto 0 (múltiplos de 10)
 	;
-	write "Digite o valor inicial (x): "
+	write !,"Digite o valor inicial (x): "
 	read x
 	;
-	write "Digite o valor final (y): "
+	write !,"Digite o valor final (y): "
 	read y
 	;
 	if x > y {
-		write "Erro: x deve ser menor ou igual a y", !
+		write !,"Erro: x deve ser menor ou igual a y"
 		quit
 	}
 	;
-	write "Números pares entre ", x, " e ", y, ":", !
+	write !,"Números pares entre ", x, " e ", y, ":"
 	;
 	set contador = 0
 	;
 	for i=x:1:y {
 		;
 		if (i#2 = 0) {
-			write i, " "
+			write i, " / "
 		}
 		;
 		if (i#2 = 0) && (i#10 = 0) {
@@ -34,7 +34,6 @@ Exercicio1	;
 	}
 	;
 	; Exibir resultado
-	write "Quantidade de números pares múltiplos de 10 entre ", x, " e ", y, ": ", contador, !
+	write !,"Quantidade de números pares múltiplos de 10 entre ", x, " e ", y, ": ", contador
 	;
-	write !
 	quit

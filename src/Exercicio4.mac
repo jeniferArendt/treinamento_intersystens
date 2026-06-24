@@ -1,0 +1,30 @@
+ROUTINE Exercicio4
+Exercicio4	;
+	;
+	; Rotina para ler dados cadastrais de um aluno
+	; Campos: Matrícula, Nome Completo, Telefone, Data de Nascimento e Sexo
+	;
+	write !,"=== CADASTRO DE ALUNO ==="
+	;
+    write !,"Digite a Matrícula: "
+    read matricula
+    ;
+    write !,"Digite o Nome Completo: "
+	read nome
+	;
+	write !,"Digite o Telefone: "
+	read telefone
+	;
+	write !,"Digite a Data de Nascimento (DD/MM/YYYY): "
+	read dataNascimento
+	;
+	write !,"Digite o Sexo (M/F): "
+	read sexo
+	;
+	write !,"=== DADOS CADASTRADOS ==="
+	write !,"Matrícula: ", matricula
+	write !,"Nome Completo: ", nome
+	write !,"Telefone: ", telefone
+	write !,"Data de Nascimento: ", dataNascimento
+	write !,"Sexo: ", sexo
+	quit

@@ -43,7 +43,7 @@ Exercicio3	;
 	set count2 = 0
 	for i=num2:1:num3 {
 		if (i#3 = 0) {
-			write i, " /"
+			write i, " / "
 			set count2 = count2 + 1
 		}
 	}
