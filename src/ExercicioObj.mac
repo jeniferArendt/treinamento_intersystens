@@ -1,0 +1,108 @@
+ROUTINE ExercicioObj
+
+ExercicioObj ;
+	;
+	; Exercício 5 - Criar um registro de Instrutor, três de Alunos e uma Turma
+	; com DataInicio vazia e Status = "Incompleta"
+	;
+	write !,"=== Exercício 5 - Criando registros ==="
+	;
+	; Criar Instrutor
+	set instrutor = ##class(Treinamento.Data.Instrutor).%New()
+	set instrutor.Nome = "Carlos Mendes"
+	set instrutor.Matricula = 1001
+	set sc = instrutor.%Save()
+	write !,"Instrutor criado: ", instrutor.Nome, " (ID: ", instrutor.%Id(), ")"
+	;
+	; Criar 3 Alunos
+	set aluno1 = ##class(Treinamento.Data.Aluno).%New()
+	set aluno1.Nome = "Maria Santos"
+	set aluno1.Matricula = 2001
+	set aluno1.Idade = 22
+	set sc = aluno1.%Save()
+	write !,"Aluno 1 criado: ", aluno1.Nome, " (ID: ", aluno1.%Id(), ")"
+	;
+	set aluno2 = ##class(Treinamento.Data.Aluno).%New()
+	set aluno2.Nome = "Pedro Oliveira"
+	set aluno2.Matricula = 2002
+	set aluno2.Idade = 25
+	set sc = aluno2.%Save()
+	write !,"Aluno 2 criado: ", aluno2.Nome, " (ID: ", aluno2.%Id(), ")"
+	;
+	set aluno3 = ##class(Treinamento.Data.Aluno).%New()
+	set aluno3.Nome = "Ana Costa"
+	set aluno3.Matricula = 2003
+	set aluno3.Idade = 20
+	set sc = aluno3.%Save()
+	write !,"Aluno 3 criado: ", aluno3.Nome, " (ID: ", aluno3.%Id(), ")"
+	;
+	; Criar Curso
+	set curso = ##class(Treinamento.Data.Curso).%New()
+	set curso.Nome = "ObjectScript Avancado"
+	set curso.Preco = 1500.00
+	set curso.Duracao = 40
+	set sc = curso.%Save()
+	write !,"Curso criado: ", curso.Nome, " (ID: ", curso.%Id(), ")"
+	;
+	; Criar Turma com DataInicio vazia e Status "Incompleta"
+	set turma = ##class(Treinamento.Data.Turma).%New()
+	set turma.DataInicio = ""
+	set turma.Status = "Incompleta"
+	set turma.Curso = curso
+	write !,"Turma criada - Status: ", turma.Status, " | DataInicio: (vazia)"
+	;
+	; Exercício 6 - Inserir Instrutor e Alunos na Turma e gravar
+	;
+	write !,!,"=== Exercício 6 - Montando e gravando a Turma ==="
+	;
+	set turma.Instrutor = instrutor
+	do turma.Alunos.Insert(aluno1)
+	do turma.Alunos.Insert(aluno2)
+	do turma.Alunos.Insert(aluno3)
+	;
+	set sc = turma.%Save()
+	if sc = 1 {
+		write !,"Turma gravada com sucesso! ID: ", turma.%Id()
+		write !,"Instrutor: ", turma.Instrutor.Nome
+		write !,"Total de alunos: ", turma.Alunos.Count()
+	} else {
+		write !,"Erro ao gravar Turma: ", $system.Status.GetErrorText(sc)
+	}
+	;
+	quit
+
+VerificaStatus(nomeCurso) ;
+	;
+	; Exercício 7 - Método de instância: recebe o nome do Curso e retorna o Status da Turma
+	;
+	set status = ""
+	set sql = "SELECT ID FROM Treinamento_Data.Turma WHERE Curso->Nome = ?"
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, nomeCurso)
+	if rs.%Next() {
+		set turma = ##class(Treinamento.Data.Turma).%OpenId(rs.%Get("ID"))
+		set status = turma.Status
+	}
+	quit status
+
+ImprimeTurma(nomeCurso) ;
+	;
+	; Exercício 8 - Método de classe: exibe informações de todos os alunos da Turma
+	; a partir do nome do Curso
+	;
+	set sql = "SELECT ID FROM Treinamento_Data.Turma WHERE Curso->Nome = ?"
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, nomeCurso)
+	if rs.%Next() {
+		set turma = ##class(Treinamento.Data.Turma).%OpenId(rs.%Get("ID"))
+		write !,"=== Turma do Curso: ", nomeCurso, " ==="
+		write !,"Status: ", turma.Status
+		write !,"Instrutor: ", turma.Instrutor.Nome
+		write !,"--- Alunos ---"
+		set count = turma.Alunos.Count()
+		for i=1:1:count {
+			set aluno = turma.Alunos.GetAt(i)
+			write !,"  [", i, "] Nome: ", aluno.Nome, " | Matricula: ", aluno.Matricula, " | Idade: ", aluno.Idade
+		}
+	} else {
+		write !,"Turma nao encontrada para o curso: ", nomeCurso
+	}
+	quit

@@ -1,0 +1,28 @@
+ROUTINE InvokeRoutine
+InvokeRoutine	;
+	;
+	write !,"Executando todos os exercícios..."
+	write !,"==============================================="
+	;
+	write !,">>> Executando Exercicio1"
+	write !,"==============================================="
+	do ^Exercicio1(5, 50)
+	;
+	write !
+	write !,"==============================================="
+	write !,">>> Executando Exercicio2"
+	write !,"==============================================="
+	do ^Exercicio2(5, 50)
+	;
+	write !
+	write !,"==============================================="
+	write !,">>> Executando Exercicio3"
+	write !,"==============================================="
+	do ^Exercicio3(5, 50, 100)
+	;
+	write !
+	write !,"==============================================="
+	write !,"Todos os exercícios foram executados!"
+	write !,"==============================================="
+	;
+	quit

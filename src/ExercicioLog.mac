@@ -1,0 +1,124 @@
+ROUTINE ExercicioLog
+	;
+	; Rotina de gerenciamento de log da aplicação usando Treinamento.Data.LogMensagem
+	;
+	quit
+	;
+	; 11 - Armazena a entrada do ciclo de vida do log
+	;
+CriarEntrada(metodo, classe)	;
+	;
+	set log = ##class(Treinamento.Data.LogMensagem).%New()
+	set log.Metodo = metodo
+	set log.Classe = classe
+	set log.Inicio = $zdatetime($horolog, 3)
+	set log.Status = "Ativo"
+	;
+	set sc = log.%Save()
+	if sc = 1 {
+		write !,"Log criado - ID: ", log.%Id()
+		quit log.%Id()
+	} else {
+		write !,"Erro ao criar log: ", $system.Status.GetErrorText(sc)
+		quit ""
+	}
+	;
+	; 12 - Armazena o fim do ciclo de vida do log
+	;
+Finalizar(idLog, statusProcesso, statusCode)	;
+	;
+	set log = ##class(Treinamento.Data.LogMensagem).%OpenId(idLog)
+	if '$isObject(log) {
+		write !,"Log nao encontrado para ID: ", idLog
+		quit
+	}
+	;
+	set log.Fim = $zdatetime($horolog, 3)
+	set log.StatusProcesso = statusProcesso
+	set log.Status = statusCode
+	;
+	set sc = log.%Save()
+	if sc = 1 {
+		write !,"Log finalizado - ID: ", idLog, " | Status: ", statusCode
+	} else {
+		write !,"Erro ao finalizar log: ", $system.Status.GetErrorText(sc)
+	}
+	quit
+	;
+	; 13 - Consulta logs por Status, DataInicio e DataFim
+	;
+ConsultaLog(status, dataInicio, dataFim)	;
+	;
+	set sql = "SELECT ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso"
+		_ " FROM Treinamento_Data.LogMensagem"
+		_ " WHERE Status = ?"
+		_ " AND Inicio >= ?"
+		_ " AND Inicio <= ?"
+		_ " ORDER BY Inicio"
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, status, dataInicio, dataFim)
+	;
+	if rs.%SQLCODE < 0 {
+		write !,"Erro na consulta: ", rs.%Message
+		quit
+	}
+	;
+	set count = 0
+	write !,"=== Consulta de Log ==="
+	write !,"Status: ", status, " | De: ", dataInicio, " Ate: ", dataFim
+	write !,"---------------------------------------------------------"
+	;
+	while rs.%Next() {
+		set count = count + 1
+		write !,"ID: ", rs.%Get("ID")
+		write !,"  Classe : ", rs.%Get("Classe"), " | Metodo: ", rs.%Get("Metodo")
+		write !,"  Inicio : ", rs.%Get("Inicio")
+		write !,"  Fim    : ", rs.%Get("Fim")
+		write !,"  Status : ", rs.%Get("Status"), " | StatusProcesso: ", rs.%Get("StatusProcesso")
+		write !,"---------------------------------------------------------"
+	}
+	write !,"Total de registros: ", count
+	quit
+	;
+	; 14 - Consulta logs com paginacao por keyset (LastId)
+	;
+ConsultaLogPaginacao(status, lastId, pagSize, dataFim)	;
+	;
+	set sql = "SELECT TOP ? ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso"
+		_ " FROM Treinamento_Data.LogMensagem"
+		_ " WHERE Status = ?"
+		_ " AND ID > ?"
+		_ " AND Fim <= ?"
+		_ " ORDER BY ID"
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, pagSize, status, lastId, dataFim)
+	;
+	if rs.%SQLCODE < 0 {
+		write !,"Erro na consulta: ", rs.%Message
+		quit
+	}
+	;
+	set count = 0
+	set ultimoId = lastId
+	write !,"=== Consulta de Log com Paginacao ==="
+	write !,"Status: ", status, " | Ate: ", dataFim, " | PagSize: ", pagSize, " | LastId: ", lastId
+	write !,"---------------------------------------------------------"
+	;
+	while rs.%Next() {
+		set count = count + 1
+		set ultimoId = rs.%Get("ID")
+		write !,"ID: ", ultimoId
+		write !,"  Classe : ", rs.%Get("Classe"), " | Metodo: ", rs.%Get("Metodo")
+		write !,"  Inicio : ", rs.%Get("Inicio")
+		write !,"  Fim    : ", rs.%Get("Fim")
+		write !,"  Status : ", rs.%Get("Status"), " | StatusProcesso: ", rs.%Get("StatusProcesso")
+		write !,"---------------------------------------------------------"
+	}
+	;
+	write !,"Registros nesta pagina: ", count
+	if count = pagSize {
+		write !,"Proximo LastId para proxima pagina: ", ultimoId
+	} else {
+		write !,"Ultima pagina atingida."
+	}
+	quit
