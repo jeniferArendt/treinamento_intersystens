@@ -8,20 +8,7 @@ ROUTINE ExercicioLog
 	;
 CriarEntrada(metodo, classe)	;
 	;
-	set log = ##class(Treinamento.Data.LogMensagem).%New()
-	set log.Metodo = metodo
-	set log.Classe = classe
-	set log.Inicio = $zdatetime($horolog, 3)
-	set log.Status = "Ativo"
-	;
-	set sc = log.%Save()
-	if sc = 1 {
-		write !,"Log criado - ID: ", log.%Id()
-		quit log.%Id()
-	} else {
-		write !,"Erro ao criar log: ", $system.Status.GetErrorText(sc)
-		quit ""
-	}
+	quit ##class(Treinamento.Data.LogMensagem).CriarEntrada(metodo, classe)
 	;
 	; 12 - Armazena o fim do ciclo de vida do log
 	;

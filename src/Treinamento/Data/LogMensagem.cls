@@ -17,6 +17,31 @@ Property StatusProcesso As %String;
 
 Property ListaLog As list Of %String;
 
+ClassMethod CriarEntrada(pMetodo As %String, pClasse As %String) As Treinamento.Data.LogMensagem
+{
+	Set tSC = $$$OK
+	try
+	{
+		Set classe                  = ..%ClassName()
+		Set name                    = $ZNAME
+		#Dim exception              As %Exception.General   = ""
+		#Dim statuCode              As %Status              = $SYSTEM.Status.OK()
+		#Dim logMensagem            As Treinamento.Data.LogMensagem
+
+		Set logMensagem             = ##class(Treinamento.Data.LogMensagem).%New()
+		Set logMensagem.Metodo      = pMetodo
+		Set logMensagem.Classe      = pClasse
+		Set logMensagem.Inicio      = $zdatetime($horolog, 3)
+		Set logMensagem.Status      = "Ativo"
+
+		Set statuCode               = logMensagem.%Save()
+
+		Quit logMensagem
+	} catch ex {
+		Set tSC = ex.AsStatus()
+	}
+}
+
 Storage Default
 {
 <Data name="LogMensagemDefaultData">
