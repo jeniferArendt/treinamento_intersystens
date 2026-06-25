@@ -6,10 +6,10 @@ Exercicio4	;
 	;
 	write !,"=== CADASTRO DE ALUNO ==="
 	;
-    write !,"Digite a Matrícula: "
-    read matricula
-    ;
-    write !,"Digite o Nome Completo: "
+	write !,"Digite a Matrícula: "
+	read matricula
+	;
+	write !,"Digite o Nome Completo: "
 	read nome
 	;
 	write !,"Digite o Telefone: "

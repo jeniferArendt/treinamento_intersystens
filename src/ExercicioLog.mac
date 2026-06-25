@@ -6,106 +6,151 @@ ROUTINE ExercicioLog
 	;
 	; 11 - Armazena a entrada do ciclo de vida do log
 	;
-CriarEntrada(metodo, classe)	;
+CriarEntrada()	;
 	;
-	quit ##class(Treinamento.Data.LogMensagem).CriarEntrada(metodo, classe)
+	set log = ##class(Treinamento.Data.LogMensagem).CriarEntrada("CriarEntrada", "ExercicioLog")
+	;
+	if $isObject(log) {
+		write !,"Log criado com sucesso!"
+		write !,"  ID     : ", log.%Id()
+		write !,"  Metodo : ", log.Metodo
+		write !,"  Classe : ", log.Classe
+		write !,"  Inicio : ", log.Inicio
+		write !,"  Status : ", log.Status
+	} else {
+		write !,"Erro ao criar log."
+	}
+	quit
+
 	;
 	; 12 - Armazena o fim do ciclo de vida do log
 	;
-Finalizar(idLog, statusProcesso, statusCode)	;
+Finalizar()	;
 	;
-	set log = ##class(Treinamento.Data.LogMensagem).%OpenId(idLog)
-	if '$isObject(log) {
-		write !,"Log nao encontrado para ID: ", idLog
-		quit
-	}
+	set log     = ##class(Treinamento.Data.LogMensagem).CriarEntrada("Finalizar", "ExercicioLog")
+	set idLog   = log.%Id()
+	write !,"Log de entrada criado para teste - ID: ", idLog
 	;
-	set log.Fim = $zdatetime($horolog, 3)
-	set log.StatusProcesso = statusProcesso
-	set log.Status = statusCode
+	set sc = ##class(Treinamento.Data.LogMensagem).Finalizar(idLog, "Concluido", "Ativo")
 	;
-	set sc = log.%Save()
-	if sc = 1 {
-		write !,"Log finalizado - ID: ", idLog, " | Status: ", statusCode
+	if sc {
+		write !,"Log finalizado com sucesso!"
+		write !,"  ID             : ", idLog
+		write !,"  StatusProcesso : Concluido"
+		write !,"  StatusCode     : OK"
 	} else {
 		write !,"Erro ao finalizar log: ", $system.Status.GetErrorText(sc)
 	}
 	quit
+
 	;
 	; 13 - Consulta logs por Status, DataInicio e DataFim
 	;
-ConsultaLog(status, dataInicio, dataFim)	;
+ConsultaLog()	;
 	;
-	set sql = "SELECT ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso"
-		_ " FROM Treinamento_Data.LogMensagem"
-		_ " WHERE Status = ?"
-		_ " AND Inicio >= ?"
-		_ " AND Inicio <= ?"
-		_ " ORDER BY Inicio"
+	set status      = "Ativo"
+	set dataInicio  = "2000-01-01 00:00:00"
+	set dataFim     = $zdatetime($horolog, 3)
 	;
-	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, status, dataInicio, dataFim)
-	;
-	if rs.%SQLCODE < 0 {
-		write !,"Erro na consulta: ", rs.%Message
-		quit
-	}
-	;
-	set count = 0
-	write !,"=== Consulta de Log ==="
-	write !,"Status: ", status, " | De: ", dataInicio, " Ate: ", dataFim
-	write !,"---------------------------------------------------------"
-	;
-	while rs.%Next() {
-		set count = count + 1
-		write !,"ID: ", rs.%Get("ID")
-		write !,"  Classe : ", rs.%Get("Classe"), " | Metodo: ", rs.%Get("Metodo")
-		write !,"  Inicio : ", rs.%Get("Inicio")
-		write !,"  Fim    : ", rs.%Get("Fim")
-		write !,"  Status : ", rs.%Get("Status"), " | StatusProcesso: ", rs.%Get("StatusProcesso")
-		write !,"---------------------------------------------------------"
-	}
-	write !,"Total de registros: ", count
+	do ##class(Treinamento.Data.LogMensagem).ConsultaLog(status, dataInicio, dataFim)
 	quit
+
 	;
 	; 14 - Consulta logs com paginacao por keyset (LastId)
 	;
-ConsultaLogPaginacao(status, lastId, pagSize, dataFim)	;
+ConsultaLogPaginacao(lastId)	;
 	;
-	set sql = "SELECT TOP ? ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso"
-		_ " FROM Treinamento_Data.LogMensagem"
-		_ " WHERE Status = ?"
-		_ " AND ID > ?"
-		_ " AND Fim <= ?"
-		_ " ORDER BY ID"
+	set status  = "Ativo"
+	set lastId  = +$get(lastId)
+	set pagSize = 3
+	set dataFim = $zdatetime($horolog+1, 3)
 	;
-	set rs = ##class(%SQL.Statement).%ExecDirect(, sql, pagSize, status, lastId, dataFim)
+	set lista = ##class(Treinamento.VO.LogMensagem).ConsultaLogPaginacao(status, lastId, pagSize, dataFim, .ultimoId)
 	;
-	if rs.%SQLCODE < 0 {
-		write !,"Erro na consulta: ", rs.%Message
-		quit
-	}
-	;
-	set count = 0
-	set ultimoId = lastId
 	write !,"=== Consulta de Log com Paginacao ==="
 	write !,"Status: ", status, " | Ate: ", dataFim, " | PagSize: ", pagSize, " | LastId: ", lastId
 	write !,"---------------------------------------------------------"
 	;
-	while rs.%Next() {
-		set count = count + 1
-		set ultimoId = rs.%Get("ID")
-		write !,"ID: ", ultimoId
-		write !,"  Classe : ", rs.%Get("Classe"), " | Metodo: ", rs.%Get("Metodo")
-		write !,"  Inicio : ", rs.%Get("Inicio")
-		write !,"  Fim    : ", rs.%Get("Fim")
-		write !,"  Status : ", rs.%Get("Status"), " | StatusProcesso: ", rs.%Get("StatusProcesso")
+	for i=1:1:lista.Count() {
+		set vo = lista.GetAt(i)
+		write !,"  Classe : ", vo.Classe, " | Metodo: ", vo.Metodo
+		write !,"  Inicio : ", vo.Inicio
+		write !,"  Fim    : ", vo.Fim
+		write !,"  Status : ", vo.Status, " | StatusProcesso: ", vo.StatusProcesso
 		write !,"---------------------------------------------------------"
 	}
 	;
-	write !,"Registros nesta pagina: ", count
-	if count = pagSize {
+	write !,"Registros nesta pagina: ", lista.Count()
+	if lista.Count() = pagSize {
 		write !,"Proximo LastId para proxima pagina: ", ultimoId
 	} else {
 		write !,"Ultima pagina atingida."
 	}
+	quit
+
+	;
+	; 15 - Busca um log pelo ID e retorna objeto dinamico JSON
+	;
+BuscarLogPorIdJSON()	;
+	;
+	set log     = ##class(Treinamento.Data.LogMensagem).CriarEntrada("BuscarLogPorIdJSON", "ExercicioLog")
+	set idLog   = log.%Id()
+	write !,"Log criado para teste - ID: ", idLog
+	;
+	set json = ##class(Treinamento.Data.LogMensagem).BuscarLogPorIdJSON(idLog)
+	;
+	if $isObject(json) {
+		write !,"Log encontrado em JSON:"
+		write !,"  ID             : ", json.ID
+		write !,"  Metodo         : ", json.Metodo
+		write !,"  Classe         : ", json.Classe
+		write !,"  Inicio         : ", json.Inicio
+		write !,"  Fim            : ", json.Fim
+		write !,"  Status         : ", json.Status
+		write !,"  StatusProcesso : ", json.StatusProcesso
+		write !,"JSON serializado: ", json.%ToJSON()
+	} else {
+		write !,"Log nao encontrado para ID: ", idLog
+	}
+	quit
+
+	;
+	; 16 - Consulta logs com paginacao e retorna estrutura JSON
+	;
+ConsultaLogPaginacaoJSON()	;
+	;
+	set status  = "Ativo"
+	set lastId  = 0
+	set pagSize = 3
+	set dataFim = $zdatetime($horolog+1, 3)
+	;
+	set json = ##class(Treinamento.VO.LogMensagem).ConsultaLogPaginacaoJSON(status, lastId, pagSize, dataFim)
+	;
+	if '$isObject(json) {
+		write !,"Erro ao consultar logs."
+		quit
+	}
+	;
+	write !,"=== Consulta de Log com Paginacao JSON ==="
+	write !,"Status: ", status, " | Ate: ", dataFim, " | PagSize: ", pagSize, " | LastId: ", lastId
+	write !,"---------------------------------------------------------"
+	;
+	set itens = json.Itens
+	for i=0:1:itens.%Size()-1 {
+		set item = itens.%Get(i)
+		write !,"  ID     : ", item.ID
+		write !,"  Classe : ", item.Classe, " | Metodo: ", item.Metodo
+		write !,"  Inicio : ", item.Inicio
+		write !,"  Fim    : ", item.Fim
+		write !,"  Status : ", item.Status, " | StatusProcesso: ", item.StatusProcesso
+		write !,"---------------------------------------------------------"
+	}
+	;
+	write !,"Total nesta pagina: ", json.Total
+	if json.ProximoLastId '= "" {
+		write !,"Proximo LastId para proxima pagina: ", json.ProximoLastId
+	} else {
+		write !,"Ultima pagina atingida."
+	}
+	write !,"JSON serializado: ", json.%ToJSON()
 	quit
