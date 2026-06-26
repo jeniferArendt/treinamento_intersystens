@@ -1,0 +1,53 @@
+ROUTINE GeraDadosAvaliacao
+GeraDadosAvaliacao	; Popula a entidade Prova.Data.Avaliacao com dados de teste
+	;
+	do ##class(Prova.Data.Avaliacao).%DeleteExtent()
+	;
+	; CodigoCandidato / NomeDisciplina / Tipo / Nota
+	do GravarAvaliacao(1, "Algoritimo", "Teorica",  5)
+	do GravarAvaliacao(2, "Algoritimo", "Teorica",  7)
+	do GravarAvaliacao(3, "Algoritimo", "Teorica",  2)
+	do GravarAvaliacao(4, "Algoritimo", "Teorica", 10)
+	do GravarAvaliacao(1, "Infra",		"Teorica", 10)
+	do GravarAvaliacao(2, "Infra",		"Teorica",  3)
+	do GravarAvaliacao(3, "Infra",		"Teorica",  6)
+	do GravarAvaliacao(4, "Infra",		"Teorica",  8)
+	do GravarAvaliacao(1, "Java",		"Pratica",  7)
+	do GravarAvaliacao(2, "Java",		"Pratica",  9)
+	do GravarAvaliacao(3, "Java",		"Pratica",  4)
+	do GravarAvaliacao(4, "Java",		"Pratica",  1)
+	;
+	write "Avaliações geradas com sucesso!", !
+	;
+	quit
+	;
+GravarAvaliacao(codigoCandidato, nomeDisciplina, tipo, nota)	;
+	;
+	set sql = "SELECT ID FROM Prova_Data.Candidato WHERE CodigoCandidato = ?"
+	;
+	set rs = ##class(%SQL.Statement).%New()
+	do rs.%Prepare(sql)
+	;
+	set result = rs.%Execute(codigoCandidato)
+	if 'result.%Next() {
+		write "Candidato não encontrado para código: ", codigoCandidato, !
+		quit
+	}
+	set candidato = ##class(Prova.Data.Candidato).%OpenId(result.%Get("ID"))
+	;
+	set a = ##class(Prova.Data.Avaliacao).%New()
+	;
+	set a.Candidato = candidato
+	set a.CodigoCandidato = codigoCandidato
+	set a.NomeDisciplina = nomeDisciplina
+	set a.Tipo = tipo
+	set a.Nota = nota
+	;
+	set sc = a.%Save()
+	;
+	if $System.Status.IsError(sc) {
+		write "Erro ao salvar avaliação "_nomeDisciplina_" cand."_codigoCandidato_": ", $System.Status.GetErrorText(sc), !
+	} else {
+		write "Avaliação gravada: cand.", codigoCandidato, " / ", nomeDisciplina, " / ", tipo, " / nota ", nota, !
+	}
+	quit

@@ -114,32 +114,6 @@ ClassMethod ConsultaLog(pStatus As %String, pDataInicio As %TimeStamp, pDataFim 
 	quit tSC
 }
 
-ClassMethod BuscarLogPorIdJSON(pId As %String) As %DynamicObject
-{
-	#dim logMensagem                As Treinamento.Data.LogMensagem = $$$NULLOREF
-	#dim json                       As %DynamicObject = $$$NULLOREF
-	try
-	{
-		set logMensagem = ##class(Treinamento.Data.LogMensagem).%OpenId(pId)
-		if '$isObject(logMensagem) {
-			quit
-		}
-
-		set json = {}
-		set json.ID             = pId
-		set json.Metodo         = logMensagem.Metodo
-		set json.Classe         = logMensagem.Classe
-		set json.LogMensagem    = logMensagem.LogMensagem
-		set json.Inicio         = logMensagem.Inicio
-		set json.Fim            = logMensagem.Fim
-		set json.Status         = logMensagem.Status
-		set json.StatusProcesso = logMensagem.StatusProcesso
-	} catch ex {
-		set json = $$$NULLOREF
-	}
-	quit json
-}
-
 Storage Default
 {
 <Data name="LogMensagemDefaultData">
