@@ -5,9 +5,9 @@ Property NomePerfil As %String;
 
 Property Codigo As %String;
 
-Property Nivel As Treinamento.Data.Nivel;
+Relationship Nivel As Treinamento.Data.Nivel [ Cardinality = one, Inverse = Perfis ];
 
-Property Usuarios As list Of Treinamento.Data.Usuario;
+Relationship Usuarios As Treinamento.Data.Usuario [ Cardinality = many, Inverse = Perfil ];
 
 Storage Default
 {
@@ -25,10 +25,10 @@ Storage Default
 <Value>Codigo</Value>
 </Value>
 <Value name="7">
-<Value>Nivel</Value>
+<Value>Usuarios</Value>
 </Value>
 <Value name="8">
-<Value>Usuarios</Value>
+<Value>Nivel</Value>
 </Value>
 </Data>
 <DataLocation>^Treinamento.Data.PerfilD</DataLocation>

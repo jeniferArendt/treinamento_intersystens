@@ -11,7 +11,9 @@ Property Sexo As %String;
 
 Property Email As %String;
 
-Property Perfil As Treinamento.Data.Perfil;
+Relationship Perfil As Treinamento.Data.Perfil [ Cardinality = one, Inverse = Usuarios ];
+
+Index NomeIndex On Nome [ Unique ];
 
 Storage Default
 {

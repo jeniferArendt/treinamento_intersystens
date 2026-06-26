@@ -5,6 +5,8 @@ Property NomeNivel As %String;
 
 Property Codigo As %String;
 
+Relationship Perfis As Treinamento.Data.Perfil [ Cardinality = many, Inverse = Nivel ];
+
 Storage Default
 {
 <Data name="NivelDefaultData">
