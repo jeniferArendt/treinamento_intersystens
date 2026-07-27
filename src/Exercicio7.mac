@@ -1,0 +1,11 @@
+ROUTINE Exercicio7
+Exercicio7	;
+	new name
+	read !, "Digite seu nome completo: ", name
+	;
+	set nameWithoutSpaces = $replace(name, " ", "")
+	write !, "Quantidade de caracteres (sem espaços): ", $length(nameWithoutSpaces)
+	;
+	set nameWithPipes = $replace(name, " ", "|")
+	write !, "Nome completo com espaços trocados por '|': ", nameWithPipes
+	quit

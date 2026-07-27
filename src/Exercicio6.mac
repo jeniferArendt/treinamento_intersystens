@@ -1,0 +1,31 @@
+ROUTINE Exercicio6
+Exercicio6	;
+	;
+	; Rotina para ler uma data em formato europeu (DD/MM/AAAA)
+	; e exibir em diferentes formatos
+	;
+	write !,"=== CONVERSÃO DE DATA ==="
+	;
+	write !,"Digite a data (DD/MM/AAAA): "
+	read dataStr
+	;
+	set valorHorolog = $zdateh(dataStr, 4, , , , , , , "")
+	;
+	if (valorHorolog = "") {
+		write !,"Erro: Data inválida!"
+		quit
+	}
+	;
+	write !,"Formato $Horolog: ", valorHorolog
+	;
+	; Exibir em formato islâmico tabular (18)
+	set dataIslamica = $zdate(valorHorolog, 18)
+	write !,"Formato Islâmico: ", dataIslamica
+	;
+	; Exibir nome do mês islâmico
+	; Extração do mês islâmico da data
+	set mesIslamico = $extract(dataIslamica, 4, 5)
+	set nomesMeses = "Muharram,Safar,Rabi' al-awwal,Rabi' al-thani,Jumada al-awwal,Jumada al-thani,Rajab,Sha'ban,Ramadan,Shawwal,Dhu al-Qi'dah,Dhu al-Hijjah"
+	set nomeMesIslamico = $piece(nomesMeses, ",", mesIslamico)
+	write !,"Nome do Mês Islâmico: ", nomeMesIslamico
+	quit

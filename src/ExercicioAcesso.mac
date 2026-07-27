@@ -1,0 +1,132 @@
+ROUTINE ExercicioAcesso
+	;
+	; 4 - Relacionamentos:
+	;   Usuario  possui um Perfil         (N:1)
+	;   Perfil   possui muitos Usuarios   (1:N)
+	;   Perfil   esta associado a um Nivel (N:1)
+	;   Nivel    pode ter muitos Perfis   (1:N)
+	;
+	quit
+	;
+	; 5 - Cria registros da tabela Nivel
+	;
+CriarNiveis()	;
+	;
+	write !,"=== Exercicio 5 - Criando Niveis ==="
+	;
+	set nivel1 = ##class(Treinamento.Data.Nivel).%New()
+	set nivel1.NomeNivel = "Acesso Total"
+	set nivel1.Codigo = "AT"
+	set sc = nivel1.%Save()
+	write !,"Nivel criado: ", nivel1.NomeNivel, " (ID: ", nivel1.%Id(), ")"
+	;
+	set nivel2 = ##class(Treinamento.Data.Nivel).%New()
+	set nivel2.NomeNivel = "Acesso Gerente"
+	set nivel2.Codigo = "AG"
+	set sc = nivel2.%Save()
+	write !,"Nivel criado: ", nivel2.NomeNivel, " (ID: ", nivel2.%Id(), ")"
+	;
+	set nivel3 = ##class(Treinamento.Data.Nivel).%New()
+	set nivel3.NomeNivel = "Acesso Coordenador"
+	set nivel3.Codigo = "AC"
+	set sc = nivel3.%Save()
+	write !,"Nivel criado: ", nivel3.NomeNivel, " (ID: ", nivel3.%Id(), ")"
+	;
+	quit
+	;
+	; 6 - Cria registros da tabela Perfil vinculando ao Nivel
+	;
+CriarPerfis()	;
+	;
+	write !,"=== Exercicio 6 - Criando Perfis ==="
+	;
+	; Localiza os Niveis pelo codigo
+	set sqlNivel = "SELECT ID FROM Treinamento_Data.Nivel WHERE Codigo = ?"
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlNivel, "AT")
+	do rs.%Next()
+	set nivel1 = ##class(Treinamento.Data.Nivel).%OpenId(rs.%Get("ID"))
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlNivel, "AG")
+	do rs.%Next()
+	set nivel2 = ##class(Treinamento.Data.Nivel).%OpenId(rs.%Get("ID"))
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlNivel, "AC")
+	do rs.%Next()
+	set nivel3 = ##class(Treinamento.Data.Nivel).%OpenId(rs.%Get("ID"))
+	;
+	set perfil1 = ##class(Treinamento.Data.Perfil).%New()
+	set perfil1.NomePerfil = "Diretor"
+	set perfil1.Codigo = "DIR"
+	set perfil1.Nivel = nivel1
+	set sc = perfil1.%Save()
+	write !,"Perfil criado: ", perfil1.NomePerfil, " | Nivel: ", perfil1.Nivel.NomeNivel, " (ID: ", perfil1.%Id(), ")"
+	;
+	set perfil2 = ##class(Treinamento.Data.Perfil).%New()
+	set perfil2.NomePerfil = "Gerente"
+	set perfil2.Codigo = "GER"
+	set perfil2.Nivel = nivel2
+	set sc = perfil2.%Save()
+	write !,"Perfil criado: ", perfil2.NomePerfil, " | Nivel: ", perfil2.Nivel.NomeNivel, " (ID: ", perfil2.%Id(), ")"
+	;
+	set perfil3 = ##class(Treinamento.Data.Perfil).%New()
+	set perfil3.NomePerfil = "Coordenador"
+	set perfil3.Codigo = "COO"
+	set perfil3.Nivel = nivel3
+	set sc = perfil3.%Save()
+	write !,"Perfil criado: ", perfil3.NomePerfil, " | Nivel: ", perfil3.Nivel.NomeNivel, " (ID: ", perfil3.%Id(), ")"
+	;
+	quit
+	;
+	; 7 - Cria registros da tabela Usuario vinculando ao Perfil
+	;
+CriarUsuarios()	;
+	;
+	write !,"=== Exercicio 7 - Criando Usuarios ==="
+	;
+	; Localiza os Perfis pelo codigo
+	set sqlPerfil = "SELECT ID FROM Treinamento_Data.Perfil WHERE Codigo = ?"
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlPerfil, "DIR")
+	do rs.%Next()
+	set perfil1 = ##class(Treinamento.Data.Perfil).%OpenId(rs.%Get("ID"))
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlPerfil, "GER")
+	do rs.%Next()
+	set perfil2 = ##class(Treinamento.Data.Perfil).%OpenId(rs.%Get("ID"))
+	;
+	set rs = ##class(%SQL.Statement).%ExecDirect(, sqlPerfil, "COO")
+	do rs.%Next()
+	set perfil3 = ##class(Treinamento.Data.Perfil).%OpenId(rs.%Get("ID"))
+	;
+	set u1 = ##class(Treinamento.Data.Usuario).%New()
+	set u1.Nome = "Roberto"
+	set u1.SobreNome = "Alves"
+	set u1.Usuario = "roberto.alves"
+	set u1.Sexo = "M"
+	set u1.Email = "roberto.alves@empresa.com"
+	set u1.Perfil = perfil1
+	set sc = u1.%Save()
+	write !,"Usuario criado: ", u1.Nome, " ", u1.SobreNome, " | Perfil: ", u1.Perfil.NomePerfil, " (ID: ", u1.%Id(), ")"
+	;
+	set u2 = ##class(Treinamento.Data.Usuario).%New()
+	set u2.Nome = "Fernanda"
+	set u2.SobreNome = "Lima"
+	set u2.Usuario = "fernanda.lima"
+	set u2.Sexo = "F"
+	set u2.Email = "fernanda.lima@empresa.com"
+	set u2.Perfil = perfil2
+	set sc = u2.%Save()
+	write !,"Usuario criado: ", u2.Nome, " ", u2.SobreNome, " | Perfil: ", u2.Perfil.NomePerfil, " (ID: ", u2.%Id(), ")"
+	;
+	set u3 = ##class(Treinamento.Data.Usuario).%New()
+	set u3.Nome = "Marcos"
+	set u3.SobreNome = "Ribeiro"
+	set u3.Usuario = "marcos.ribeiro"
+	set u3.Sexo = "M"
+	set u3.Email = "marcos.ribeiro@empresa.com"
+	set u3.Perfil = perfil3
+	set sc = u3.%Save()
+	write !,"Usuario criado: ", u3.Nome, " ", u3.SobreNome, " | Perfil: ", u3.Perfil.NomePerfil, " (ID: ", u3.%Id(), ")"
+	;
+	quit
