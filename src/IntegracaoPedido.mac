@@ -1,0 +1,39 @@
+ROUTINE IntegracaoPedido
+IntegracaoPedido()	;
+	;
+	; Rotina para alimentar a tabela TRE.DATA.Pedido com dados de exemplo
+	;
+	set dados(1) = $listbuild("1","02/02/2006","3","R$ 124,00","22,1","1","1","06/02/2006")
+	set dados(2) = $listbuild("2","31/01/2006","3","R$ 722,00","75,4","3","2","04/01/2006")
+	set dados(3) = $listbuild("3","20/11/2005","5","R$ 500,00","28,9","2","2","25/11/2005")
+	set dados(4) = $listbuild("12","13/12/2018","7","R$ 920,00","12,4","1","2","14/12/2018")
+	;
+	set total = 0
+	set erros = 0
+	;
+	for i=1:1:4 {
+		set obj = ##class(TRE.DATA.Pedido).%New()
+		set obj.CodigoPedido         = $list(dados(i),1)
+		set obj.DataPedido           = $list(dados(i),2)
+		set obj.CodigoCliente        = $list(dados(i),3)
+		set obj.ValorPedido          = $list(dados(i),4)
+		set obj.PesoKg               = $list(dados(i),5)
+		set obj.Volumes              = $list(dados(i),6)
+		set obj.CodigoTransportadora = $list(dados(i),7)
+		set obj.DataPrevisaoEntrega  = $list(dados(i),8)
+		;
+		set tSC = obj.%Save()
+		;
+		if $system.Status.IsError(tSC) {
+			write !,"Erro ao salvar pedido ", obj.CodigoPedido, ": ", $system.Status.GetErrorText(tSC)
+			set erros = erros + 1
+		} else {
+			write !,"Pedido ", obj.CodigoPedido, " salvo com sucesso (ID=", obj.%Id(), ")"
+			set total = total + 1
+		}
+	}
+	;
+	write !,!,"Total de pedidos inseridos: ", total
+	write !,"Total de erros: ", erros
+	;
+	quit

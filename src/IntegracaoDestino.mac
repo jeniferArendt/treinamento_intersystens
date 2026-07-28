@@ -1,0 +1,36 @@
+ROUTINE IntegracaoDestino
+IntegracaoDestino()	;
+	;
+	; Rotina para alimentar a tabela TRE.DATA.Destino com dados de exemplo
+	;
+	set dados(1) = $listbuild("A1",1000,5999,"2")
+	set dados(2) = $listbuild("A2",8000,8499,"2")
+	set dados(3) = $listbuild("A3",13000,13139,"3")
+	set dados(4) = $listbuild("B1",20000,23799,"4")
+	set dados(5) = $listbuild("C1",90000,91999,"5")
+	;
+	set total = 0
+	set erros = 0
+	;
+	for i=1:1:5 {
+		set obj = ##class(TRE.DATA.Destino).%New()
+		set obj.CodigoDestino    = $list(dados(i),1)
+		set obj.CEPInicial       = $list(dados(i),2)
+		set obj.CEPFinal         = $list(dados(i),3)
+		set obj.PrazoEntregaDias = $list(dados(i),4)
+		;
+		set tSC = obj.%Save()
+		;
+		if $system.Status.IsError(tSC) {
+			write !,"Erro ao salvar destino ", obj.CodigoDestino, ": ", $system.Status.GetErrorText(tSC)
+			set erros = erros + 1
+		} else {
+			write !,"Destino ", obj.CodigoDestino, " salvo com sucesso (ID=", obj.%Id(), ")"
+			set total = total + 1
+		}
+	}
+	;
+	write !,!,"Total de destinos inseridos: ", total
+	write !,"Total de erros: ", erros
+	;
+	quit

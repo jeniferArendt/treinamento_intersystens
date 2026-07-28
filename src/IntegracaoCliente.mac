@@ -1,0 +1,40 @@
+ROUTINE IntegracaoCliente
+IntegracaoCliente()	;
+	;
+	; Rotina para alimentar a tabela TRE.DATA.Cliente com dados de exemplo
+	;
+	set dados(1) = $listbuild("3","Alfreds Futterkiste","Maria Anders","Rua São João, 1536","01510-000","São Paulo","SP","alfreds@teste.com.br")
+	set dados(2) = $listbuild("5","Trujillo Emparedados","Ana Trujillo","Av. Beira Rio, 9878","21333-972","Rio de Janeiro","RJ","trujillo@teste.com.br")
+	set dados(3) = $listbuild("6","A M Taquería","Antonio Moreno","Av. Siqueira Campo, 988 - Sala 3","02510-333","São Paulo","SP","taqueria@teste.com.br")
+	set dados(4) = $listbuild("7","Around the Horn","Thomas Hardy","Av. Sete de Setembro, 1478","80510-000","Curitiba","PR","hardy@teste.com.br")
+	set dados(5) = $listbuild("8","Berglunds","Christina Berglund","Av. Pampulha, 87","31455-999","Belo Horizonte","MG","berglunds@teste.com.br")
+	;
+	set total = 0
+	set erros = 0
+	;
+	for i=1:1:5 {
+		set obj = ##class(TRE.DATA.Cliente).%New()
+		set obj.CodigoCliente = $list(dados(i),1)
+		set obj.NomeEmpresa   = $list(dados(i),2)
+		set obj.NomeContato   = $list(dados(i),3)
+		set obj.Endereco      = $list(dados(i),4)
+		set obj.CEP           = $list(dados(i),5)
+		set obj.Cidade        = $list(dados(i),6)
+		set obj.Estado        = $list(dados(i),7)
+		set obj.EnderecoEmail = $list(dados(i),8)
+		;
+		set tSC = obj.%Save()
+		;
+		if $system.Status.IsError(tSC) {
+			write !,"Erro ao salvar cliente ", obj.CodigoCliente, ": ", $system.Status.GetErrorText(tSC)
+			set erros = erros + 1
+		} else {
+			write !,"Cliente ", obj.CodigoCliente, " salvo com sucesso (ID=", obj.%Id(), ")"
+			set total = total + 1
+		}
+	}
+	;
+	write !,!,"Total de clientes inseridos: ", total
+	write !,"Total de erros: ", erros
+	;
+	quit

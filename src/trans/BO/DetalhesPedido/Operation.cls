@@ -12,6 +12,9 @@ XData MessageMap
 <MapItem MessageType="trans.BO.DetalhesPedido.Destino.Request">
 <Method>Destino</Method>
 </MapItem>
+<MapItem MessageType="trans.BO.DetalhesPedido.Pedido.Request">
+<Method>Pedido</Method>
+</MapItem>
 </MapItems>
 }
 
@@ -22,6 +25,8 @@ Method Cliente(pRequest As trans.BO.DetalhesPedido.Cliente.Request, Output pResp
 
 	try
 	{
+		hang 30
+
 		$$$TRACE("Iniciando Metodo BO Cliente")
 
 		if (pRequest.CodigoCliente = "") {
@@ -71,6 +76,8 @@ Method Destino(pRequest As trans.BO.DetalhesPedido.Destino.Request, Output pResp
 
 	try
 	{
+		hang 30
+		
 		$$$TRACE("Iniciando Metodo BO Destino")
 		set obj = ##class(TRE.DATA.Destino).%New()
 		set obj.CodigoDestino    = pRequest.CodigoDestino
@@ -86,6 +93,38 @@ Method Destino(pRequest As trans.BO.DetalhesPedido.Destino.Request, Output pResp
 	catch ex
 	{
 		$$$TRACE("Erro salvando Objeto Metodo BO Destino " _ ex.DisplayString())
+		set tSC = ex.AsStatus()
+	}
+	quit tSC
+}
+
+Method Pedido(pRequest As trans.BO.DetalhesPedido.Pedido.Request, Output pResponse As trans.BO.DetalhesPedido.Pedido.Response) As %Status
+{
+	set tSC = $system.Status.OK()
+	set pResponse = ##class(trans.BO.DetalhesPedido.Pedido.Response).%New()
+
+	try
+	{
+		$$$TRACE("Iniciando Metodo BO Pedido")
+
+		set obj = ##class(TRE.DATA.Pedido).%New()
+		set obj.CodigoPedido         = pRequest.CodigoPedido
+		set obj.DataPedido           = pRequest.DataPedido
+		set obj.CodigoCliente        = pRequest.CodigoCliente
+		set obj.ValorPedido          = pRequest.ValorPedido
+		set obj.PesoKg               = pRequest.PesoKg
+		set obj.Volumes              = pRequest.Volumes
+		set obj.CodigoTransportadora = pRequest.CodigoTransportadora
+		set obj.DataPrevisaoEntrega  = pRequest.DataPrevisaoEntrega
+
+		$$$TRACE("Salvando obj no BO de Pedido")
+		set tSC = obj.%Save()
+		quit:$$$ISERR(tSC)
+		set pResponse.Message = "O obj de Pedido foi salvo com sucesso"
+	}
+	catch ex
+	{
+		$$$TRACE("Erro salvando Objeto Metodo BO Pedido " _ ex.DisplayString())
 		set tSC = ex.AsStatus()
 	}
 	quit tSC
