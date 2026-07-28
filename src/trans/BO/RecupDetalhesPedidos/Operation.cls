@@ -37,7 +37,7 @@ Method RecupDetalhesPedidos(pRequest As trans.BO.RecupDetalhesPedidos.Request, O
 		quit:$$$ISERR(tSC)
 
 		if 'rs.%Next() {
-			set tSC = $$$ERROR($$$GeneralError, "Pedido " _ pRequest.CodigoPedido _ " não encontrado")
+			$$$TRACE("Pedido " _ pRequest.CodigoPedido _ " não encontrado")
 			quit
 		}
 
