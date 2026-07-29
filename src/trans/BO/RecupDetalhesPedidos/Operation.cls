@@ -1,8 +1,6 @@
 Class trans.BO.RecupDetalhesPedidos.Operation Extends Ens.BusinessOperation
 {
 
-Parameter ADAPTER = "EnsLib.SQL.OutboundAdapter";
-
 Parameter INVOCATION = "Queue";
 
 XData MessageMap
@@ -33,11 +31,15 @@ Method RecupDetalhesPedidos(pRequest As trans.BO.RecupDetalhesPedidos.Request, O
 			_ " inner join TRE_DATA.Cliente as Cliente on Pedido.CodigoCliente = Cliente.CodigoCliente"
 			_ " where Pedido.CodigoPedido = ?"
 
-		set tSC = ..Adapter.ExecuteQuery(.rs, sql, pRequest.CodigoPedido)
-		quit:$$$ISERR(tSC)
+		set rs = ##class(%SQL.Statement).%ExecDirect(, sql, pRequest.CodigoPedido)
+
+		if rs.%SQLCODE < 0 {
+			set tSC = $$$ERROR($$$GeneralError, rs.%Message)
+			quit
+		}
 
 		if 'rs.%Next() {
-			$$$TRACE("Pedido " _ pRequest.CodigoPedido _ " não encontrado")
+			$$$TRACE("Pedido " _ pRequest.CodigoPedido _ " não encontrado!")
 			quit
 		}
 
