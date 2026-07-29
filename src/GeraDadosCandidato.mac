@@ -1,0 +1,32 @@
+ROUTINE GeraDadosCandidato
+GeraDadosCandidato	; Popula a entidade Prova.Data.Candidato com dados de teste
+	;
+    do ##class(Prova.Data.Candidato).%DeleteExtent()
+	;
+    do GravarCandidato("Leonardo", 25, "Masculino", 1)
+    do GravarCandidato("Rodrigo", 43, "Masculino", 2)
+    do GravarCandidato("Amanda", 34, "Feminino", 3)
+    do GravarCandidato("Claudia", 27, "Feminino", 4)
+    ;
+	write "Candidatos gerados com sucesso!", !
+	;
+    quit
+	;
+GravarCandidato(nome, idade, sexo, codigo)	;
+    ;
+    set c = ##class(Prova.Data.Candidato).%New()
+    ;
+    set c.Nome = nome
+    set c.Idade = idade
+    set c.Sexo = sexo
+    set c.CodigoCandidato = codigo
+    ;
+    set sc = c.%Save()
+    ;
+    if $System.Status.IsError(sc) {
+        write "Erro ao salvar candidato "_nome_": ", $System.Status.GetErrorText(sc), !
+    } else {
+        write "Candidato gravado: ", nome, " (ID=", c.%Id(), ")", !
+    }
+    ;
+    quit

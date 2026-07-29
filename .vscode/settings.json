@@ -2,7 +2,7 @@
     "objectscript.conn": {
         "server": "consistem",
         "ns": "TREINAMENTO",
-        "active": false
+        "active": true
     },
     "workbench.colorTheme": "Abyss"
 }
