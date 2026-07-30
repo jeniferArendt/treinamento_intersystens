@@ -3,7 +3,7 @@ Class Treinamento.Data.Curso Extends %Persistent
 
 Property Nome As %String;
 
-Property Preco As %Float;
+Property Preco As %Double;
 
 Property Duracao As %Integer;
 

@@ -15,9 +15,9 @@ Property NomeEmpresa As %String;
 
 Property NomeContato As %String;
 
-Property PesoKg As %String;
+Property PesoKg As %Double;
 
-Property Volumes As %String;
+Property Volumes As %Integer;
 
 Storage Default
 {

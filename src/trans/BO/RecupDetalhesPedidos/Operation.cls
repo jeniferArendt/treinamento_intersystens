@@ -50,7 +50,7 @@ Method RecupDetalhesPedidos(pRequest As trans.BO.RecupDetalhesPedidos.Request, O
 		set pResponse.Email       = rs.%Get("EnderecoEmail")
 		set pResponse.NomeEmpresa = rs.%Get("NomeEmpresa")
 		set pResponse.NomeContato = rs.%Get("NomeContato")
-		set pResponse.PesoKg      = rs.%Get("PesoKg")
+		set pResponse.PesoKg      = $translate(rs.%Get("PesoKg"), ",", ".")
 		set pResponse.Volumes     = rs.%Get("Volumes")
 	}
 	catch ex
