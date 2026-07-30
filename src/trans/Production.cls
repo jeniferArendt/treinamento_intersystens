@@ -14,6 +14,8 @@ XData ProductionDefinition
   </Item>
   <Item Name="ProcessaTransporte" Category="Transporte" ClassName="trans.BP.ProcessaTransporte.Process" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
+  <Item Name="ProcessaTransporteCustom" Category="Transporte" ClassName="trans.BP.ProcessaTransporteCustom.ProcessCustom" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
 </Production>
 }
 

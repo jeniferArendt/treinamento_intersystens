@@ -5,7 +5,7 @@ Property Status As %String;
 
 Property CodigoTransp As %String;
 
-Property DataPrevisaoEntrega As %String;
+Property DataPrevisaoEntrega As %Date;
 
 Storage Default
 {

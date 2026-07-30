@@ -15,7 +15,7 @@ Property Volumes As %Integer;
 
 Property CodigoTransportadora As %String;
 
-Property DataPrevisaoEntrega As %String;
+Property DataPrevisaoEntrega As %Date;
 
 Storage Default
 {
