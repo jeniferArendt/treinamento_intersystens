@@ -30,7 +30,7 @@ ClassMethod GetResultadoCredito(pCodigoCliente As %Integer, pIndicador As %Strin
 		set tSC = ##class(Ens.Director).CreateBusinessService("Avalia Credito BS", .tBS)
 		quit:$$$ISERR(tSC)
 
-		set tSC = tBS.AvaliaCredito(pCodigoCliente, pIndicador, .tResponse)
+		set tSC = tBS.OnProcessInput(pCodigoCliente, .tResponse, .pIndicador)
 		quit:$$$ISERR(tSC)
 
 		do ..EscreveResposta(tResponse)

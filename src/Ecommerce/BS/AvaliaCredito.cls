@@ -1,7 +1,7 @@
 Class Ecommerce.BS.AvaliaCredito Extends Ens.BusinessService
 {
 
-Method AvaliaCredito(pCodigoCliente As %Integer, pIndicador As %String, Output pOutput As Ecommerce.BP.Msg.Response) As %Status
+Method OnProcessInput(pCodigoCliente As %RegisteredObject, Output pOutput As Ecommerce.BP.Msg.Response, ByRef pIndicador As %String) As %Status
 {
 	set tSC = $system.Status.OK()
 

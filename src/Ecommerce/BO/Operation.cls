@@ -1,8 +1,6 @@
 Class Ecommerce.BO.Operation Extends Ens.BusinessOperation
 {
 
-Parameter ADAPTER = "EnsLib.SQL.OutboundAdapter";
-
 Parameter INVOCATION = "Queue";
 
 XData MessageMap
@@ -37,8 +35,12 @@ Method RecupDadosCredito(pRequest As Ecommerce.BO.Msg.Request, Output pResponse 
 			_ " inner join Ecommerce_Data.ScoreCredito as Score on Score.CodigoCliente = Cliente.CodigoCliente"
 			_ " where Cliente.CodigoCliente = ? and Score.Indicador = ?"
 
-		set tSC = ..Adapter.ExecuteQuery(.tRS, tSQL, pRequest.CodigoCliente, pRequest.Indicador)
-		quit:$$$ISERR(tSC)
+		set tRS = ##class(%SQL.Statement).%ExecDirect(, tSQL, pRequest.CodigoCliente, pRequest.Indicador)
+
+		if tRS.%SQLCODE < 0 {
+			set tSC = $$$ERROR($$$GeneralError, tRS.%Message)
+			quit
+		}
 
 		if 'tRS.%Next() {
 			set tSC = $$$ERROR($$$GeneralError, "Nenhum indicador '"_pRequest.Indicador_"' encontrado para o cliente "_pRequest.CodigoCliente)
