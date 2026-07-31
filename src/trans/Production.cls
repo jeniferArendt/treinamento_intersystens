@@ -23,6 +23,14 @@ XData ProductionDefinition
   </Item>
   <Item Name="ProcessCliente" Category="Cliente" ClassName="trans.BP.DetalhesCliente.ProcessaCliente" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
+  <Item Name="Dados Credito BO" Category="Credito" ClassName="Ecommerce.BO.Operation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Adapter" Name="DSN"></Setting>
+    <Setting Target="Adapter" Name="Credentials"></Setting>
+  </Item>
+  <Item Name="Avalia Credito BP" Category="Credito" ClassName="Ecommerce.BP.Process" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="Avalia Credito BS" Category="Credito" ClassName="Ecommerce.BS.AvaliaCredito" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
 </Production>
 }
 

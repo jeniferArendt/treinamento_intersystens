@@ -1,0 +1,41 @@
+ROUTINE GeraDadosScoreCredito
+GeraDadosScoreCredito	; Popula a entidade Ecommerce.Data.ScoreCredito com dados de teste
+	;
+	do ##class(Ecommerce.Data.ScoreCredito).%DeleteExtent()
+	;
+	; CodigoCliente / Indicador / TipoAvaliacao / Score
+	do GravarScore(1, "AnaliseCredito", "Cadastral", 5)
+	do GravarScore(2, "AnaliseCredito", "Cadastral", 7)
+	do GravarScore(3, "AnaliseCredito", "Cadastral", 2)
+	do GravarScore(4, "AnaliseCredito", "Cadastral", 10)
+	do GravarScore(1, "HistoricoPagamento", "Cadastral", 10)
+	do GravarScore(2, "HistoricoPagamento", "Cadastral", 3)
+	do GravarScore(3, "HistoricoPagamento", "Cadastral", 6)
+	do GravarScore(4, "HistoricoPagamento", "Cadastral", 8)
+	do GravarScore(1, "ComportamentoCompra", "Comportamental", 7)
+	do GravarScore(2, "ComportamentoCompra", "Comportamental", 9)
+	do GravarScore(3, "ComportamentoCompra", "Comportamental", 4)
+	do GravarScore(4, "ComportamentoCompra", "Comportamental", 1)
+	;
+	write "Scores de credito gerados com sucesso!", !
+	;
+	quit
+	;
+GravarScore(codigoCliente, indicador, tipoAvaliacao, score)	;
+	;
+	set s = ##class(Ecommerce.Data.ScoreCredito).%New()
+	;
+	set s.CodigoCliente = codigoCliente
+	set s.Indicador = indicador
+	set s.TipoAvaliacao = tipoAvaliacao
+	set s.Score = score
+	;
+	set sc = s.%Save()
+	;
+	if $system.Status.IsError(sc) {
+		write "Erro ao salvar score "_indicador_" cliente "_codigoCliente_": ", $system.Status.GetErrorText(sc), !
+	} else {
+		write "Score gravado: cliente ", codigoCliente, " / ", indicador, " / ", tipoAvaliacao, " / score ", score, !
+	}
+	;
+	quit

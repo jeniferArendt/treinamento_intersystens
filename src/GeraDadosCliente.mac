@@ -1,0 +1,32 @@
+ROUTINE GeraDadosCliente
+GeraDadosCliente	; Popula a entidade Ecommerce.Data.Cliente com dados de teste
+	;
+	do ##class(Ecommerce.Data.Cliente).%DeleteExtent()
+	;
+	do GravarCliente("Leonardo", 25, "Masculino", 1)
+	do GravarCliente("Rodrigo", 43, "Masculino", 2)
+	do GravarCliente("Amanda", 34, "Feminino", 3)
+	do GravarCliente("Claudia", 27, "Feminino", 4)
+	;
+	write "Clientes gerados com sucesso!", !
+	;
+	quit
+	;
+GravarCliente(nome, idade, sexo, codigo)	;
+	;
+	set c = ##class(Ecommerce.Data.Cliente).%New()
+	;
+	set c.Nome = nome
+	set c.Idade = idade
+	set c.Sexo = sexo
+	set c.CodigoCliente = codigo
+	;
+	set sc = c.%Save()
+	;
+	if $system.Status.IsError(sc) {
+		write "Erro ao salvar cliente "_nome_": ", $system.Status.GetErrorText(sc), !
+	} else {
+		write "Cliente gravado: ", nome, " (ID=", c.%Id(), ")", !
+	}
+	;
+	quit
